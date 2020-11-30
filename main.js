@@ -28,3 +28,36 @@ const generateGame = (boardSize = 10, mineCount = 15) => {
   });
   return grid;
 };
+const draw = (grid) => {
+  container.innerHTML = "";
+  grid.forEach((row, x) => {
+    let rowElement = document.createElement("div");
+    rowElement.className = "row";
+    row.forEach((square, y) => {
+      const squareElement = document.createElement("button");
+      squareElement.className = `square`;
+      squareElement.id = `${x}${y}`;
+      squareElement.addEventListener("click", (e) => {
+        if (grid[x][y] !== "M") {
+          if (grid[x][y] === "") {
+            // const emptySquares = getEmptySquares([[x, y]], grid);
+            const emptySquares = getEmptySquares2([[x, y]], grid);
+            console.log("function success:", emptySquares);
+            emptySquares.forEach((square) => {
+              document.getElementById(
+                `${square[0]}${square[1]}`
+              ).disabled = true;
+            });
+          }
+          e.target.innerText = square;
+          e.target.disabled = true;
+        } else {
+          e.innerText = square;
+          endGame(grid);
+        }
+      });
+      rowElement.appendChild(squareElement);
+    });
+    container.appendChild(rowElement);
+  });
+};
