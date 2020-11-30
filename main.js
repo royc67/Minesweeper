@@ -1,4 +1,26 @@
 console.log("hello world");
+const countMines = (square, grid) => {
+  const [squareX, squareY] = square;
+  const squares = [];
+  VECTORS.forEach((vector) => {
+    const [vecX, vecY] = vector;
+    let newX =
+      squareX > 0
+        ? Math.min(grid.length - 1, squareX + vecX)
+        : Math.max(0, squareX + vecX);
+    let newY =
+      squareY > 0
+        ? Math.min(grid.length - 1, squareY + vecY)
+        : Math.max(0, squareY + vecY);
+
+    if (
+      grid[newX][newY] === "M" &&
+      !squares.some((square) => square[0] === newX && square[1] === newY)
+    )
+      squares.push([newX, newY]);
+  });
+  return squares.length;
+};
 const generateGame = (boardSize = 10, mineCount = 15) => {
   const grid = Array.from({ length: boardSize }, () =>
     Array.from({ length: boardSize }, () => "")
