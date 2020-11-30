@@ -1,4 +1,18 @@
 console.log("hello world");
+const container = document.getElementById("container");
+const startGameButton = document.querySelector("#startGameButton");
+
+let VECTORS = [
+  [1, 0],
+  [0, 1],
+  [-1, 0],
+  [0, -1],
+  [1, 1],
+  [-1, 1],
+  [1, -1],
+  [-1, -1],
+];
+
 const countMines = (square, grid) => {
   const [squareX, squareY] = square;
   const squares = [];
