@@ -76,3 +76,15 @@ const endGame = (grid) => {
     container.appendChild(rowElement);
   });
 };
+const startGame = () => {
+  const inputs = document.querySelectorAll("input");
+  const boardSize = parseInt(inputs[0].value);
+  const mineCount = parseInt(inputs[1].value);
+  if (!boardSize || !mineCount) {
+    alert("please enter board size and mines count");
+  } else {
+    draw(generateGame(boardSize, mineCount));
+  }
+};
+
+startGameButton.addEventListener("click", startGame);
