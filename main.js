@@ -61,3 +61,18 @@ const draw = (grid) => {
     container.appendChild(rowElement);
   });
 };
+const endGame = (grid) => {
+  container.innerHTML = "";
+  grid.forEach((row) => {
+    let rowElement = document.createElement("div");
+    rowElement.className = "row";
+    row.forEach((square) => {
+      const squareElement = document.createElement("button");
+      squareElement.className = `square`;
+      squareElement.innerText = square;
+      squareElement.disabled = true;
+      rowElement.appendChild(squareElement);
+    });
+    container.appendChild(rowElement);
+  });
+};
