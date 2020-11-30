@@ -1,4 +1,3 @@
-console.log("hello world");
 const container = document.getElementById("container");
 const startGameButton = document.querySelector("#startGameButton");
 
@@ -35,6 +34,90 @@ const countMines = (square, grid) => {
   });
   return squares.length;
 };
+{
+  // const checkVectors = (x, y, boardSize) => {
+  //   if (x > 0) {
+  //     if (x < boardSize - 1) {
+  //       if (y > 0 && y < boardSize - 1) {
+  //         return [
+  //           [1, 1],
+  //           [1, 0],
+  //           [0, 1],
+  //           [-1, 0],
+  //           [-1, 1],
+  //           [1, -1],
+  //           [-1, -1],
+  //           [0, -1],
+  //         ];
+  //       } else if (y === 0) {
+  //         return [
+  //           [-1, 0],
+  //           [-1, 1],
+  //           [0, 1],
+  //           [1, 1],
+  //           [1, 0],
+  //         ];
+  //       } else if (y === boardSize - 1) {
+  //         return [
+  //           [-1, 0],
+  //           [-1, -1],
+  //           [0, -1],
+  //           [1, -1],
+  //           [1, 0],
+  //         ];
+  //       }
+  //     } else if (x === boardSize - 1) {
+  //       if (y > 0 && y < boardSize - 1) {
+  //         return [
+  //           [-1, 0],
+  //           [-1, 1],
+  //           [-1, -1],
+  //           [0, -1],
+  //           [0, 1],
+  //         ];
+  //       } else if (y === 0) {
+  //         return [
+  //           [-1, 0],
+  //           [0, 1],
+  //           [-1, -1],
+  //         ];
+  //       } else if (y === boardSize - 1) {
+  //         return [
+  //           [-1, 0],
+  //           [-1, -1],
+  //           [-1, 1],
+  //         ];
+  //       }
+  //     }
+  //   }
+  //   if (x === 0) {
+  //     if (y > 0) {
+  //       if (y < boardSize - 1) {
+  //         return [
+  //           [0, -1],
+  //           [0, 1],
+  //           [1, 0],
+  //           [1, 1],
+  //           [1, -1],
+  //         ];
+  //       } else if (y === boardSize - 1) {
+  //         return [
+  //           [0, -1],
+  //           [1, -1],
+  //           [1, 0],
+  //         ];
+  //       }
+  //     } else if (y === 0) {
+  //       return [
+  //         [1, 0],
+  //         [1, 1],
+  //         [0, 1],
+  //       ];
+  //     }
+  //   }
+  // };
+}
+
 const generateGame = (boardSize = 10, mineCount = 15) => {
   const grid = Array.from({ length: boardSize }, () =>
     Array.from({ length: boardSize }, () => "")
@@ -64,6 +147,110 @@ const generateGame = (boardSize = 10, mineCount = 15) => {
   });
   return grid;
 };
+{
+  // const checkEmpty = ({ emptySquares = [], currentSquare = [0, 0], grid }) => {
+  //   const possibleVectors = checkVectorsEmptySquares(
+  //     currentSquare[0],
+  //     currentSquare[1],
+  //     grid.length
+  //   );
+  //   const tempEmptySquares = [...emptySquares];
+  //   let isThereAny = false;
+  //   possibleVectors.forEach((vector) => {
+  //     const [newX, newY] = [
+  //       currentSquare[0] + vector[0],
+  //       currentSquare[1] + vector[1],
+  //     ];
+  //     const isSquareEmpty = grid[newX][newY] === "";
+  //     if (
+  //       isSquareEmpty &&
+  //       !emptySquares.some((square) => square[0] === newX && square[1] === newY)
+  //     ) {
+  //       isThereAny = true;
+  //       tempEmptySquares.push(
+  //         ...checkEmpty({
+  //           emptySquares: [...tempEmptySquares, [newX, newY]],
+  //           currentSquare: [newX, newY],
+  //           grid,
+  //         })
+  //       );
+  //     }
+  //   });
+  //   if (!isThereAny) return emptySquares;
+  // };
+}
+
+const getEmptySquares = (emptySquaresTemp, grid) => {
+  let isThereAny = false;
+  const [squareX, squareY] = emptySquaresTemp[0];
+  const squares = [];
+  VECTORS.slice(0, 4).forEach((vector, index) => {
+    const [vecX, vecY] = vector;
+    let newX =
+      squareX > 0
+        ? Math.min(grid.length - 1, squareX + vecX)
+        : Math.max(0, squareX + vecX);
+    let newY =
+      squareY > 0
+        ? Math.min(grid.length - 1, squareY + vecY)
+        : Math.max(0, squareY + vecY);
+    if (
+      grid[newX][newY] === "" &&
+      !squares.some((square) => square[0] === newX && square[1] === newY) &&
+      !emptySquaresTemp.some(
+        (square) => square[0] === newX && square[1] === newY
+      )
+    ) {
+      isThereAny = true;
+      squares.push([newX, newY]);
+    }
+  });
+  if (isThereAny) {
+    squares.forEach((square) => {
+      console.log("squares: ", squares, "emptySquares: ", emptySquaresTemp);
+      emptySquaresTemp.unshift(square);
+      return getEmptySquares(emptySquaresTemp, grid);
+    });
+  } else {
+    console.log("return:", emptySquaresTemp);
+    return emptySquaresTemp;
+  }
+};
+
+const getEmptySquares2 = (emptySquares, grid) => {
+  let newEmptySquares;
+  let canMove = false;
+  const [squareX, squareY] = emptySquares[0];
+  for (let i = 0; i < 4; i++) {
+    const [vecX, vecY] = VECTORS[i];
+    let newX =
+      squareX > 0
+        ? Math.min(grid.length - 1, squareX + vecX)
+        : Math.max(0, squareX + vecX);
+    let newY =
+      squareY > 0
+        ? Math.min(grid.length - 1, squareY + vecY)
+        : Math.max(0, squareY + vecY);
+    if (
+      grid[newX][newY] === "" &&
+      !emptySquares.some((square) => square[0] === newX && square[1] === newY)
+    ) {
+      canMove = true;
+      newEmptySquares = getEmptySquares2([[newX, newY], ...emptySquares], grid);
+    }
+  }
+  if (canMove) {
+    // newEmptySquares.forEach((emptySquare) => {
+    //   const [squareX, squareY] = emptySquare;
+
+    // });
+    return newEmptySquares;
+  } else {
+    console.log("return:", emptySquares);
+    return emptySquares;
+  }
+};
+
 const draw = (grid) => {
   container.innerHTML = "";
   grid.forEach((row, x) => {
@@ -97,6 +284,7 @@ const draw = (grid) => {
     container.appendChild(rowElement);
   });
 };
+
 const endGame = (grid) => {
   container.innerHTML = "";
   grid.forEach((row) => {
@@ -112,6 +300,7 @@ const endGame = (grid) => {
     container.appendChild(rowElement);
   });
 };
+
 const startGame = () => {
   const inputs = document.querySelectorAll("input");
   const boardSize = parseInt(inputs[0].value);
