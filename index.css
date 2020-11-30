@@ -1,0 +1,14 @@
+.row {
+  display: flex;
+}
+body {
+  background-color: rgba(139, 80, 139, 0.151);
+}
+
+.row {
+  display: flex;
+}
+.square {
+  height: 25px;
+  width: 25px;
+}
