@@ -1,6 +1,8 @@
 const container = document.getElementById("container");
 const startGameButton = document.querySelector("#startGameButton");
 let firstMove;
+let depth = 0;
+let startTime;
 
 // declaring vectors
 let VECTORS = [
@@ -88,7 +90,17 @@ function draw(grid) {
             break;
           case "":
             firstMove = false;
+            // reveal squares
+            const emptySquares = checkEmptySquares(grid, [squareElement.id]);
+            console.log(emptySquares);
+            emptySquares.forEach((pos) => {
+              const [tempX, tempY] = pos.split("-");
+              const emptySquareElement = document.getElementById(pos);
+              emptySquareElement.innerText = grid[tempX][tempY];
+              emptySquareElement.disabled = true;
+            });
             e.target.innerText = square;
+
             e.target.disabled = true;
             break;
           default:
@@ -129,6 +141,67 @@ function startGame(firstClick = false) {
   } else {
     draw(generateGrid(boardSize, mineCount));
   }
+}
+
+function checkEmptySquares(grid, emptySquares) {
+  if (!depth) startTime = Date.now();
+  depth++;
+  const originalLength = emptySquares.length;
+
+  emptySquares.forEach((pos) => {
+    const [x, y] = pos.split("-");
+
+    VECTORS.slice(0, 4).forEach((vec) => {
+      // valid pos
+      const newPos = toNewPos([x, y], vec, grid.length);
+      if (!newPos) return;
+
+      // already Checked
+      const [newX, newY] = newPos;
+      const stringPos = `${newX}-${newY}`;
+      if (emptySquares.includes(stringPos)) return;
+
+      // empty square
+      if (!grid[newX][newY]) emptySquares.push(`${newX}-${newY}`);
+    });
+  });
+
+  // found all empty squares - adding surrounding squares and returning the final value
+  if (originalLength === emptySquares.length) {
+    const surroundingSquares = [];
+    //
+    emptySquares.forEach((pos) => {
+      const [x, y] = pos.split("-");
+
+      VECTORS.slice(0, 4).forEach((vec) => {
+        // valid pos
+        const newPos = toNewPos([x, y], vec, grid.length);
+        if (!newPos) return;
+
+        // already Checked
+        const [newX, newY] = newPos;
+        const stringPos = `${newX}-${newY}`;
+        if (
+          emptySquares.includes(stringPos) ||
+          surroundingSquares.includes(stringPos)
+        )
+          return;
+
+        // empty square
+        if (grid[newX][newY] !== "💣")
+          surroundingSquares.push(`${newX}-${newY}`);
+      });
+    });
+
+    console.log(
+      `recursion ran ${depth} times, took ${Date.now() - startTime}ms`
+    );
+    depth = 0;
+    // final value
+    return [...emptySquares, ...surroundingSquares];
+  }
+
+  return checkEmptySquares(grid, [...emptySquares]);
 }
 
 startGameButton.addEventListener("click", startGame);
