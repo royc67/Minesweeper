@@ -3,6 +3,7 @@ const startGameButton = document.querySelector("#startGameButton");
 let firstMove;
 let depth = 0;
 let startTime;
+let indexes;
 
 // declaring vectors
 const VECTORS = [
@@ -164,12 +165,17 @@ function startGame(firstClick = false) {
   }
 }
 
-function checkEmptySquares(grid, emptySquares) {
-  if (!depth) startTime = Date.now();
+function checkEmptySquares(grid, emptySquares, prevLength) {
+  if (!depth) {
+    startTime = Date.now();
+    indexes = [];
+  }
   depth++;
-  const originalLength = emptySquares.length;
+  const curLength = emptySquares.length;
 
-  emptySquares.forEach((pos) => {
+  indexes.push(curLength);
+
+  emptySquares.slice(prevLength).forEach((pos) => {
     const [x, y] = pos.split("-");
 
     VECTORS.slice(0, 4).forEach((vec) => {
@@ -188,7 +194,7 @@ function checkEmptySquares(grid, emptySquares) {
   });
 
   // found all empty squares - adding surrounding squares and returning the final value
-  if (originalLength === emptySquares.length) {
+  if (curLength === emptySquares.length) {
     const surroundingSquares = [];
     //
     emptySquares.forEach((pos) => {
@@ -222,7 +228,7 @@ function checkEmptySquares(grid, emptySquares) {
     return [...emptySquares, ...surroundingSquares];
   }
 
-  return checkEmptySquares(grid, [...emptySquares]);
+  return checkEmptySquares(grid, [...emptySquares], curLength);
 }
 
 startGameButton.addEventListener("click", startGame);
