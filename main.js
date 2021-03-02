@@ -19,6 +19,7 @@ function generateGrid(boardSize = 10, mineCount = 15) {
     Array.from({ length: boardSize }, () => "")
   );
 
+  // plant mines
   let mineX, mineY;
   let minesPosition = [];
   while (mineCount > 0) {
@@ -34,11 +35,25 @@ function generateGrid(boardSize = 10, mineCount = 15) {
 
     mineCount--;
   }
-  grid.forEach((row, x) => {
-    row.forEach((square, y) => {
-      if (square === "💣") return;
-      const counter = countMines([x, y], grid);
-      counter && (grid[x][y] = counter);
+
+  // count mines
+  minesPosition.forEach((pos) => {
+    const [x, y] = pos;
+    VECTORS.forEach((vec) => {
+      const newPos = toNewPos(pos, vec, grid.length);
+      if (!newPos) return;
+      //
+      const [newX, newY] = newPos;
+      switch (grid[newX][newY]) {
+        case "💣":
+          break;
+        case "":
+          grid[newX][newY] = 1;
+          break;
+        default:
+          grid[newX][newY]++;
+          break;
+      }
     });
   });
   return grid;
@@ -52,29 +67,6 @@ function toNewPos(pos, vec, gridSize) {
   if (newX >= gridSize || newX < 0 || newY >= gridSize || newY < 0) return null;
 
   return [newX, newY];
-}
-
-function countMines(square, grid) {
-  const [squareX, squareY] = square;
-  const squares = [];
-  VECTORS.forEach((vector) => {
-    const [vecX, vecY] = vector;
-    let newX =
-      squareX > 0
-        ? Math.min(grid.length - 1, squareX + vecX)
-        : Math.max(0, squareX + vecX);
-    let newY =
-      squareY > 0
-        ? Math.min(grid.length - 1, squareY + vecY)
-        : Math.max(0, squareY + vecY);
-
-    if (
-      grid[newX][newY] === "💣" &&
-      !squares.some((square) => square[0] === newX && square[1] === newY)
-    )
-      squares.push([newX, newY]);
-  });
-  return squares.length;
 }
 
 function draw(grid) {
