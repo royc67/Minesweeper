@@ -82,11 +82,13 @@ function draw(grid) {
     row.forEach((square, y) => {
       const squareElement = document.createElement("button");
       squareElement.className = `square`;
-      squareElement.id = `${x}${y}`;
+      squareElement.id = `${x}-${y}`;
       squareElement.addEventListener("click", (e) => {
+        if (["🚩", "?"].includes(squareElement.innerText)) return;
         switch (square) {
           case "💣":
             if (firstMove) {
+              startGame();
             } else endGame(grid);
             break;
           case "":
@@ -108,6 +110,24 @@ function draw(grid) {
             firstMove = false;
             e.target.innerText = square;
             e.target.disabled = true;
+        }
+      });
+
+      squareElement.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+        // if (squareElement.disabled === true) return;
+        switch (squareElement.innerText) {
+          case "":
+            squareElement.innerText = "🚩";
+            break;
+          case "🚩":
+            squareElement.innerText = "?";
+            break;
+          case "?":
+            squareElement.innerText = "";
+            break;
+          default:
+            break;
         }
       });
       rowElement.appendChild(squareElement);
