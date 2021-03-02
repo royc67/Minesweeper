@@ -44,6 +44,16 @@ function generateGrid(boardSize = 10, mineCount = 15) {
   return grid;
 }
 
+function toNewPos(pos, vec, gridSize) {
+  const [x, y] = pos;
+  const [vecX, vecY] = vec;
+
+  const [newX, newY] = [x + vecX, y + vecY];
+  if (newX >= gridSize || newX < 0 || newY >= gridSize || newY < 0) return null;
+
+  return [newX, newY];
+}
+
 function countMines(square, grid) {
   const [squareX, squareY] = square;
   const squares = [];
