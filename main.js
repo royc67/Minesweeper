@@ -5,7 +5,7 @@ let depth = 0;
 let startTime;
 
 // declaring vectors
-let VECTORS = [
+const VECTORS = [
   [1, 0],
   [0, 1],
   [-1, 0],
@@ -32,7 +32,7 @@ function generateGrid(boardSize = 10, mineCount = 15) {
       ];
     } while (grid[mineX][mineY] === "💣");
 
-    minesPosition.push([mineX, mineY]);
+    minesPosition.push(`${mineX}-${mineY}`);
     grid[mineX][mineY] = "💣";
 
     mineCount--;
@@ -40,9 +40,8 @@ function generateGrid(boardSize = 10, mineCount = 15) {
 
   // count mines
   minesPosition.forEach((pos) => {
-    const [x, y] = pos;
     VECTORS.forEach((vec) => {
-      const newPos = toNewPos(pos, vec, grid.length);
+      const newPos = toNewPos(pos.split("-"), vec, grid.length);
       if (!newPos) return;
       //
       const [newX, newY] = newPos;
@@ -58,15 +57,19 @@ function generateGrid(boardSize = 10, mineCount = 15) {
       }
     });
   });
+
   return grid;
 }
 
 function toNewPos(pos, vec, gridSize) {
-  const [x, y] = pos;
+  let [x, y] = pos;
+  x = parseInt(x);
+  y = parseInt(y);
   const [vecX, vecY] = vec;
 
-  const [newX, newY] = [x + vecX, y + vecY];
-  if (newX >= gridSize || newX < 0 || newY >= gridSize || newY < 0) return null;
+  const [newX, newY] = [parseInt(x + vecX), parseInt(y + vecY)];
+  if (newX > gridSize - 1 || newX < 0 || newY > gridSize - 1 || newY < 0)
+    return null;
 
   return [newX, newY];
 }
@@ -84,8 +87,6 @@ function draw(grid) {
         switch (square) {
           case "💣":
             if (firstMove) {
-              console.log("mine on first click");
-              startGame([x, y]);
             } else endGame(grid);
             break;
           case "":
