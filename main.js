@@ -11,113 +11,6 @@ let VECTORS = [
   [1, -1],
   [-1, -1],
 ];
-
-const countMines = (square, grid) => {
-  const [squareX, squareY] = square;
-  const squares = [];
-  VECTORS.forEach((vector) => {
-    const [vecX, vecY] = vector;
-    let newX =
-      squareX > 0
-        ? Math.min(grid.length - 1, squareX + vecX)
-        : Math.max(0, squareX + vecX);
-    let newY =
-      squareY > 0
-        ? Math.min(grid.length - 1, squareY + vecY)
-        : Math.max(0, squareY + vecY);
-
-    if (
-      grid[newX][newY] === "M" &&
-      !squares.some((square) => square[0] === newX && square[1] === newY)
-    )
-      squares.push([newX, newY]);
-  });
-  return squares.length;
-};
-{
-  // const checkVectors = (x, y, boardSize) => {
-  //   if (x > 0) {
-  //     if (x < boardSize - 1) {
-  //       if (y > 0 && y < boardSize - 1) {
-  //         return [
-  //           [1, 1],
-  //           [1, 0],
-  //           [0, 1],
-  //           [-1, 0],
-  //           [-1, 1],
-  //           [1, -1],
-  //           [-1, -1],
-  //           [0, -1],
-  //         ];
-  //       } else if (y === 0) {
-  //         return [
-  //           [-1, 0],
-  //           [-1, 1],
-  //           [0, 1],
-  //           [1, 1],
-  //           [1, 0],
-  //         ];
-  //       } else if (y === boardSize - 1) {
-  //         return [
-  //           [-1, 0],
-  //           [-1, -1],
-  //           [0, -1],
-  //           [1, -1],
-  //           [1, 0],
-  //         ];
-  //       }
-  //     } else if (x === boardSize - 1) {
-  //       if (y > 0 && y < boardSize - 1) {
-  //         return [
-  //           [-1, 0],
-  //           [-1, 1],
-  //           [-1, -1],
-  //           [0, -1],
-  //           [0, 1],
-  //         ];
-  //       } else if (y === 0) {
-  //         return [
-  //           [-1, 0],
-  //           [0, 1],
-  //           [-1, -1],
-  //         ];
-  //       } else if (y === boardSize - 1) {
-  //         return [
-  //           [-1, 0],
-  //           [-1, -1],
-  //           [-1, 1],
-  //         ];
-  //       }
-  //     }
-  //   }
-  //   if (x === 0) {
-  //     if (y > 0) {
-  //       if (y < boardSize - 1) {
-  //         return [
-  //           [0, -1],
-  //           [0, 1],
-  //           [1, 0],
-  //           [1, 1],
-  //           [1, -1],
-  //         ];
-  //       } else if (y === boardSize - 1) {
-  //         return [
-  //           [0, -1],
-  //           [1, -1],
-  //           [1, 0],
-  //         ];
-  //       }
-  //     } else if (y === 0) {
-  //       return [
-  //         [1, 0],
-  //         [1, 1],
-  //         [0, 1],
-  //       ];
-  //     }
-  //   }
-  // };
-}
-
 const generateGame = (boardSize = 10, mineCount = 15) => {
   const grid = Array.from({ length: boardSize }, () =>
     Array.from({ length: boardSize }, () => "")
@@ -147,44 +40,11 @@ const generateGame = (boardSize = 10, mineCount = 15) => {
   });
   return grid;
 };
-{
-  // const checkEmpty = ({ emptySquares = [], currentSquare = [0, 0], grid }) => {
-  //   const possibleVectors = checkVectorsEmptySquares(
-  //     currentSquare[0],
-  //     currentSquare[1],
-  //     grid.length
-  //   );
-  //   const tempEmptySquares = [...emptySquares];
-  //   let isThereAny = false;
-  //   possibleVectors.forEach((vector) => {
-  //     const [newX, newY] = [
-  //       currentSquare[0] + vector[0],
-  //       currentSquare[1] + vector[1],
-  //     ];
-  //     const isSquareEmpty = grid[newX][newY] === "";
-  //     if (
-  //       isSquareEmpty &&
-  //       !emptySquares.some((square) => square[0] === newX && square[1] === newY)
-  //     ) {
-  //       isThereAny = true;
-  //       tempEmptySquares.push(
-  //         ...checkEmpty({
-  //           emptySquares: [...tempEmptySquares, [newX, newY]],
-  //           currentSquare: [newX, newY],
-  //           grid,
-  //         })
-  //       );
-  //     }
-  //   });
-  //   if (!isThereAny) return emptySquares;
-  // };
-}
 
-const getEmptySquares = (emptySquaresTemp, grid) => {
-  let isThereAny = false;
-  const [squareX, squareY] = emptySquaresTemp[0];
+const countMines = (square, grid) => {
+  const [squareX, squareY] = square;
   const squares = [];
-  VECTORS.slice(0, 4).forEach((vector, index) => {
+  VECTORS.forEach((vector) => {
     const [vecX, vecY] = vector;
     let newX =
       squareX > 0
@@ -194,63 +54,15 @@ const getEmptySquares = (emptySquaresTemp, grid) => {
       squareY > 0
         ? Math.min(grid.length - 1, squareY + vecY)
         : Math.max(0, squareY + vecY);
+
     if (
-      grid[newX][newY] === "" &&
-      !squares.some((square) => square[0] === newX && square[1] === newY) &&
-      !emptySquaresTemp.some(
-        (square) => square[0] === newX && square[1] === newY
-      )
-    ) {
-      isThereAny = true;
+      grid[newX][newY] === "M" &&
+      !squares.some((square) => square[0] === newX && square[1] === newY)
+    )
       squares.push([newX, newY]);
-    }
   });
-  if (isThereAny) {
-    squares.forEach((square) => {
-      console.log("squares: ", squares, "emptySquares: ", emptySquaresTemp);
-      emptySquaresTemp.unshift(square);
-      return getEmptySquares(emptySquaresTemp, grid);
-    });
-  } else {
-    console.log("return:", emptySquaresTemp);
-    return emptySquaresTemp;
-  }
+  return squares.length;
 };
-
-const getEmptySquares2 = (emptySquares, grid) => {
-  let newEmptySquares;
-  let canMove = false;
-  const [squareX, squareY] = emptySquares[0];
-  for (let i = 0; i < 4; i++) {
-    const [vecX, vecY] = VECTORS[i];
-    let newX =
-      squareX > 0
-        ? Math.min(grid.length - 1, squareX + vecX)
-        : Math.max(0, squareX + vecX);
-    let newY =
-      squareY > 0
-        ? Math.min(grid.length - 1, squareY + vecY)
-        : Math.max(0, squareY + vecY);
-    if (
-      grid[newX][newY] === "" &&
-      !emptySquares.some((square) => square[0] === newX && square[1] === newY)
-    ) {
-      canMove = true;
-      newEmptySquares = getEmptySquares2([[newX, newY], ...emptySquares], grid);
-    }
-  }
-  if (canMove) {
-    // newEmptySquares.forEach((emptySquare) => {
-    //   const [squareX, squareY] = emptySquare;
-
-    // });
-    return newEmptySquares;
-  } else {
-    console.log("return:", emptySquares);
-    return emptySquares;
-  }
-};
-
 const draw = (grid) => {
   container.innerHTML = "";
   grid.forEach((row, x) => {
@@ -264,12 +76,13 @@ const draw = (grid) => {
         if (grid[x][y] !== "M") {
           if (grid[x][y] === "") {
             // const emptySquares = getEmptySquares([[x, y]], grid);
-            const emptySquares = getEmptySquares2([[x, y]], grid);
-            console.log("function success:", emptySquares);
+            const emptySquares = checkEmptySquares([[x, y]], grid);
             emptySquares.forEach((square) => {
-              document.getElementById(
+              let currentSquare = document.getElementById(
                 `${square[0]}${square[1]}`
-              ).disabled = true;
+              );
+              currentSquare.disabled = true;
+              currentSquare.innerText = grid[square[0]][square[1]];
             });
           }
           e.target.innerText = square;
@@ -283,6 +96,87 @@ const draw = (grid) => {
     });
     container.appendChild(rowElement);
   });
+};
+const checkEmptySquares = (emptySquares, grid, index = 0) => {
+  if (index !== -1) {
+    let [squareX, squareY] = emptySquares[index];
+    let isStuck = false;
+    let i = 0;
+    while (!isStuck) {
+      let [vecX, vecY] = VECTORS[i];
+      let newX =
+        squareX > 0
+          ? Math.min(grid.length - 1, squareX + vecX)
+          : Math.max(0, squareX + vecX);
+      let newY =
+        squareY > 0
+          ? Math.min(grid.length - 1, squareY + vecY)
+          : Math.max(0, squareY + vecY);
+      if (
+        grid[newX][newY] === "" &&
+        !emptySquares.some((square) => square[0] === newX && square[1] === newY)
+      ) {
+        emptySquares.unshift([newX, newY]);
+        [squareX, squareY] = [newX, newY];
+      } else if (i === 3) {
+        isStuck = true;
+      } else i++;
+    }
+    index = getNextRoad(emptySquares, grid);
+    const emptySquaresTemp = checkEmptySquares(emptySquares, grid, index);
+
+    // return surrountEmptySquares(emptySquaresTemp, grid);
+    return emptySquaresTemp;
+  }
+  return emptySquaresTemp;
+  // return surrountEmptySquares(emptySquares, grid);
+};
+const getNextRoad = (emptySquares, grid) => {
+  for (let i = 0; i < emptySquares.length; i++) {
+    let [squareX, squareY] = emptySquares[i];
+    for (let j = 0; j < 4; j++) {
+      let [vecX, vecY] = VECTORS[j];
+      let newX =
+        squareX > 0
+          ? Math.min(grid.length - 1, squareX + vecX)
+          : Math.max(0, squareX + vecX);
+      let newY =
+        squareY > 0
+          ? Math.min(grid.length - 1, squareY + vecY)
+          : Math.max(0, squareY + vecY);
+      if (
+        grid[newX][newY] === "" &&
+        !emptySquares.some((square) => square[0] === newX && square[1] === newY)
+      ) {
+        return i;
+      }
+    }
+  }
+  return -1;
+};
+const surrountEmptySquares = (emptySquares, grid) => {
+  let squares = [...emptySquares];
+  emptySquares.forEach((square) => {
+    const [squareX, squareY] = square;
+    VECTORS.slice(0, 3).forEach((vector) => {
+      const [vecX, vecY] = vector;
+      let newX =
+        squareX > 0
+          ? Math.min(grid.length - 1, squareX + vecX)
+          : Math.max(0, squareX + vecX);
+      let newY =
+        squareY > 0
+          ? Math.min(grid.length - 1, squareY + vecY)
+          : Math.max(0, squareY + vecY);
+
+      if (
+        grid[newX][newY] !== "M" &&
+        !squares.some((square) => square[0] === newX && square[1] === newY)
+      )
+        squares.unshift([newX, newY]);
+    });
+  });
+  return squares;
 };
 
 const endGame = (grid) => {
@@ -300,7 +194,6 @@ const endGame = (grid) => {
     container.appendChild(rowElement);
   });
 };
-
 const startGame = () => {
   const inputs = document.querySelectorAll("input");
   const boardSize = parseInt(inputs[0].value);
@@ -311,5 +204,4 @@ const startGame = () => {
     draw(generateGame(boardSize, mineCount));
   }
 };
-
 startGameButton.addEventListener("click", startGame);
