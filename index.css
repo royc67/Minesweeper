@@ -96,12 +96,46 @@
 }
 
 .square {
+  background-size: cover;
+  background-image: url(./Images/facingDown.png);
   flex-grow: 1;
   flex-basis: 0;
-  text-align: center;
-  font-size: 80%;
+  /* text-align: center; */
+  /* font-size: 80%; */
 }
 
-.square:hover {
-  background-color: rgb(233, 231, 231);
+._0 {
+  background-image: url(./Images/0.png);
+}
+._1 {
+  background-image: url(./Images/1.png);
+}
+._2 {
+  background-image: url(./Images/2.png);
+}
+._3 {
+  background-image: url(./Images/3.png);
+}
+._4 {
+  background-image: url(./Images/4.png);
+}
+._5 {
+  background-image: url(./Images/5.png);
+}
+._6 {
+  background-image: url(./Images/6.png);
+}
+._7 {
+  background-image: url(./Images/7.png);
+}
+._8 {
+  background-image: url(./Images/8.png);
+}
+
+.flagged {
+  background-image: url(./Images/flagged.png);
+}
+
+._M {
+  background-image: url(./Images/bomb.png);
 }
