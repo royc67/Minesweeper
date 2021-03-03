@@ -153,7 +153,7 @@ function endGame(grid) {
   });
 }
 
-function startGame(firstClick = false) {
+function startGame() {
   firstMove = true;
   const inputs = document.querySelectorAll("input");
   const boardSize = parseInt(inputs[0].value);
@@ -189,7 +189,9 @@ function checkEmptySquares(grid, emptySquares, prevLength) {
       if (emptySquares.includes(stringPos)) return;
 
       // empty square
-      if (!grid[newX][newY]) emptySquares.push(`${newX}-${newY}`);
+      if (!grid[newX][newY]) {
+        emptySquares.push(`${newX}-${newY}`);
+      }
     });
   });
 
@@ -200,7 +202,7 @@ function checkEmptySquares(grid, emptySquares, prevLength) {
     emptySquares.forEach((pos) => {
       const [x, y] = pos.split("-");
 
-      VECTORS.slice(0, 4).forEach((vec) => {
+      VECTORS.forEach((vec) => {
         // valid pos
         const newPos = toNewPos([x, y], vec, grid.length);
         if (!newPos) return;
