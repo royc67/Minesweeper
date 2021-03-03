@@ -3,6 +3,7 @@ const startGameButton = document.querySelector("#startGameButton");
 let firstMove;
 let depth = 0;
 let startTime;
+let indexes;
 
 // declaring vectors
 const VECTORS = [
@@ -152,7 +153,7 @@ function endGame(grid) {
   });
 }
 
-function startGame(firstClick = false) {
+function startGame() {
   firstMove = true;
   const inputs = document.querySelectorAll("input");
   const boardSize = parseInt(inputs[0].value);
@@ -164,12 +165,17 @@ function startGame(firstClick = false) {
   }
 }
 
-function checkEmptySquares(grid, emptySquares) {
-  if (!depth) startTime = Date.now();
+function checkEmptySquares(grid, emptySquares, prevLength) {
+  if (!depth) {
+    startTime = Date.now();
+    indexes = [];
+  }
   depth++;
-  const originalLength = emptySquares.length;
+  const curLength = emptySquares.length;
 
-  emptySquares.forEach((pos) => {
+  indexes.push(curLength);
+
+  emptySquares.slice(prevLength).forEach((pos) => {
     const [x, y] = pos.split("-");
 
     VECTORS.slice(0, 4).forEach((vec) => {
@@ -183,18 +189,20 @@ function checkEmptySquares(grid, emptySquares) {
       if (emptySquares.includes(stringPos)) return;
 
       // empty square
-      if (!grid[newX][newY]) emptySquares.push(`${newX}-${newY}`);
+      if (!grid[newX][newY]) {
+        emptySquares.push(`${newX}-${newY}`);
+      }
     });
   });
 
   // found all empty squares - adding surrounding squares and returning the final value
-  if (originalLength === emptySquares.length) {
+  if (curLength === emptySquares.length) {
     const surroundingSquares = [];
     //
     emptySquares.forEach((pos) => {
       const [x, y] = pos.split("-");
 
-      VECTORS.slice(0, 4).forEach((vec) => {
+      VECTORS.forEach((vec) => {
         // valid pos
         const newPos = toNewPos([x, y], vec, grid.length);
         if (!newPos) return;
@@ -222,7 +230,7 @@ function checkEmptySquares(grid, emptySquares) {
     return [...emptySquares, ...surroundingSquares];
   }
 
-  return checkEmptySquares(grid, [...emptySquares]);
+  return checkEmptySquares(grid, [...emptySquares], curLength);
 }
 
 startGameButton.addEventListener("click", startGame);
