@@ -2,6 +2,7 @@ const container = document.getElementById("gridContainer");
 const startGameButton = document.querySelector("#startGameButton");
 // const minesLeft = document.getElementById("minesLeft");
 const flagsLeft = document.getElementById("flagsLeft");
+let flags;
 const timer = document.getElementById("timer");
 let firstMove;
 let depth = 0;
@@ -22,7 +23,7 @@ const VECTORS = [
 
 function generateGrid(boardSize = 10, mineCount = 15) {
   const grid = Array.from({ length: boardSize }, () =>
-    Array.from({ length: boardSize }, () => "")
+    Array.from({ length: boardSize }, () => 0)
   );
 
   // plant mines
@@ -34,10 +35,10 @@ function generateGrid(boardSize = 10, mineCount = 15) {
         Math.floor(Math.random() * boardSize),
         Math.floor(Math.random() * boardSize),
       ];
-    } while (grid[mineX][mineY] === "💣");
+    } while (grid[mineX][mineY] === "M");
 
     minesPosition.push(`${mineX}-${mineY}`);
-    grid[mineX][mineY] = "💣";
+    grid[mineX][mineY] = "M";
 
     mineCount--;
   }
@@ -50,9 +51,9 @@ function generateGrid(boardSize = 10, mineCount = 15) {
       //
       const [newX, newY] = newPos;
       switch (grid[newX][newY]) {
-        case "💣":
+        case "M":
           break;
-        case "":
+        case 0:
           grid[newX][newY] = 1;
           break;
         default:
@@ -84,55 +85,42 @@ function draw(grid) {
     let rowElement = document.createElement("div");
     rowElement.className = "row";
     row.forEach((square, y) => {
-      const squareElement = document.createElement("button");
+      const squareElement = document.createElement("div");
       squareElement.className = `square`;
       squareElement.id = `${x}-${y}`;
 
       squareElement.addEventListener("click", (e) => {
-        if (["🚩", "?"].includes(squareElement.innerText)) return;
+        if (e.target.classList.contains("flagged")) return;
         switch (square) {
-          case "💣":
+          case "M":
             if (firstMove) {
               startGame();
             } else endGame(grid);
             break;
-          case "":
+          case 0:
             firstMove = false;
             // reveal squares
             const emptySquares = checkEmptySquares(grid, [squareElement.id]);
             emptySquares.forEach((pos) => {
               const [tempX, tempY] = pos.split("-");
               const emptySquareElement = document.getElementById(pos);
-              emptySquareElement.innerText = grid[tempX][tempY];
-              emptySquareElement.disabled = true;
+              emptySquareElement.classList.add(`_${grid[tempX][tempY]}`);
             });
-            e.target.innerText = square;
-
-            e.target.disabled = true;
             break;
           default:
             firstMove = false;
-            e.target.innerText = square;
-            e.target.disabled = true;
+            e.target.className += ` _${grid[x][y]}`;
         }
       });
 
       squareElement.addEventListener("contextmenu", (e) => {
         e.preventDefault();
-        // if (squareElement.disabled === true) return;
-        switch (squareElement.innerText) {
-          case "":
-            squareElement.innerText = "🚩";
-            break;
-          case "🚩":
-            squareElement.innerText = "?";
-            break;
-          case "?":
-            squareElement.innerText = "";
-            break;
-          default:
-            break;
-        }
+        if (e.target.classList.value.includes("_")) return;
+        if (!flags && !e.target.classList.contains("flagged")) return;
+        e.target.classList.toggle("flagged");
+
+        flags = flags + (e.target.classList.contains("flagged") ? -1 : +1);
+        flagsLeft.innerText = flags;
       });
       rowElement.appendChild(squareElement);
     });
@@ -141,18 +129,12 @@ function draw(grid) {
 }
 
 function endGame(grid) {
-  container.innerHTML = "";
-  grid.forEach((row) => {
-    let rowElement = document.createElement("div");
-    rowElement.className = "row";
-    row.forEach((square) => {
-      const squareElement = document.createElement("button");
-      squareElement.className = `square`;
-      squareElement.innerText = square;
-      squareElement.disabled = true;
-      rowElement.appendChild(squareElement);
+  grid.forEach((row, x) => {
+    row.forEach((square, y) => {
+      const squareElement = document.getElementById(`${x}-${y}`);
+      squareElement.classList.remove(`flagged`);
+      squareElement.classList.add(`_${square}`);
     });
-    container.appendChild(rowElement);
   });
 }
 
@@ -164,7 +146,8 @@ function startGame() {
 
   // counters:
   timer.innerText = 0;
-  // minesLeft.innerText = mineCount;s
+  flags = mineCount;
+  console.log(flags);
   flagsLeft.innerText = mineCount;
 
   if (!boardSize || !mineCount) {
@@ -226,7 +209,7 @@ function checkEmptySquares(grid, emptySquares, prevLength) {
           return;
 
         // empty square
-        if (grid[newX][newY] !== "💣")
+        if (grid[newX][newY] !== "M")
           surroundingSquares.push(`${newX}-${newY}`);
       });
     });
