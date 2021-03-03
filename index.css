@@ -8,8 +8,8 @@
 #gameContainer {
   /* background-color: rgba(30, 17, 99, 0.712); */
   margin: auto;
-  width: 45vmin;
-  height: 50vmin;
+  width: 90vmin;
+  height: 100vmin;
   border: 3px solid grey;
   padding: 10px;
   display: flex;
@@ -44,12 +44,14 @@
 
 #flagIcon {
   border: 1px solid black;
-  width: 50%;
+  width: 25%;
+  background-size: cover;
+  background-image: url("./Images/flagged.png");
   /*  */
 }
 #flagsLeft {
-  background-color: rgba(146, 102, 146, 0.151);
-  width: 50%;
+  /* background-color: rgba(146, 102, 146, 0.151); */
+  width: 25%;
   text-align: center;
   font-size: 125%;
   /*  */
@@ -69,8 +71,9 @@
 }
 
 #timerIcon {
-  border: 1px solid black;
   width: 25%;
+  background-size: cover;
+  background-image: url("./Images/clock.png");
 }
 
 #timer {
@@ -105,37 +108,47 @@
 }
 
 ._0 {
+  background-size: cover;
   background-image: url(./Images/0.png);
 }
 ._1 {
+  background-size: cover;
   background-image: url(./Images/1.png);
 }
 ._2 {
+  background-size: cover;
   background-image: url(./Images/2.png);
 }
 ._3 {
+  background-size: cover;
   background-image: url(./Images/3.png);
 }
 ._4 {
+  background-size: cover;
   background-image: url(./Images/4.png);
 }
 ._5 {
+  background-size: cover;
   background-image: url(./Images/5.png);
 }
 ._6 {
+  background-size: cover;
   background-image: url(./Images/6.png);
 }
 ._7 {
+  background-size: cover;
   background-image: url(./Images/7.png);
 }
 ._8 {
+  background-size: cover;
   background-image: url(./Images/8.png);
+}
+
+._M {
+  background-size: cover;
+  background-image: url(./Images/bomb.png);
 }
 
 .flagged {
   background-image: url(./Images/flagged.png);
-}
-
-._M {
-  background-image: url(./Images/bomb.png);
 }

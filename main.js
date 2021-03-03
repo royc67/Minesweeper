@@ -1,13 +1,17 @@
 const container = document.getElementById("gridContainer");
 const startGameButton = document.querySelector("#startGameButton");
+const gameButton = document.querySelector("#gameButton");
+
 // const minesLeft = document.getElementById("minesLeft");
-const flagsLeft = document.getElementById("flagsLeft");
-let flags;
-const timer = document.getElementById("timer");
+const flagsElement = document.getElementById("flagsLeft");
+let flagsLeft;
+const timerElement = document.getElementById("timer");
 let firstMove;
 let depth = 0;
 let startTime;
 let indexes;
+let gameInterval;
+let timer;
 
 // declaring vectors
 const VECTORS = [
@@ -116,11 +120,12 @@ function draw(grid) {
       squareElement.addEventListener("contextmenu", (e) => {
         e.preventDefault();
         if (e.target.classList.value.includes("_")) return;
-        if (!flags && !e.target.classList.contains("flagged")) return;
+        if (!flagsLeft && !e.target.classList.contains("flagged")) return;
         e.target.classList.toggle("flagged");
 
-        flags = flags + (e.target.classList.contains("flagged") ? -1 : +1);
-        flagsLeft.innerText = flags;
+        flagsLeft =
+          flagsLeft + (e.target.classList.contains("flagged") ? -1 : +1);
+        flagsElement.innerText = flagsLeft;
       });
       rowElement.appendChild(squareElement);
     });
@@ -129,6 +134,8 @@ function draw(grid) {
 }
 
 function endGame(grid) {
+  clearInterval(gameInterval);
+
   grid.forEach((row, x) => {
     row.forEach((square, y) => {
       const squareElement = document.getElementById(`${x}-${y}`);
@@ -139,16 +146,23 @@ function endGame(grid) {
 }
 
 function startGame() {
+  clearInterval(gameInterval);
   firstMove = true;
   const inputs = document.querySelectorAll("input");
   const boardSize = parseInt(inputs[0].value);
   const mineCount = parseInt(inputs[1].value);
 
+  gameInterval = setInterval(() => {
+    timer++;
+    timerElement.innerText = timer;
+  }, 1000);
+
   // counters:
-  timer.innerText = 0;
-  flags = mineCount;
-  console.log(flags);
-  flagsLeft.innerText = mineCount;
+  timer = 0;
+  timerElement.innerText = 0;
+  flagsLeft = mineCount;
+  console.log(flagsLeft);
+  flagsElement.innerText = mineCount;
 
   if (!boardSize || !mineCount) {
     alert("please enter board size and mines count");
@@ -226,3 +240,4 @@ function checkEmptySquares(grid, emptySquares, prevLength) {
 }
 
 startGameButton.addEventListener("click", startGame);
+gameButton.addEventListener("click", startGame);
