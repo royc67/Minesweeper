@@ -1,14 +1,107 @@
-.row {
-  display: flex;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-body {
-  background-color: rgba(139, 80, 139, 0.151);
+
+/* game container */
+#gameContainer {
+  /* background-color: rgba(30, 17, 99, 0.712); */
+  margin: auto;
+  width: 45vmin;
+  height: 50vmin;
+  border: 3px solid grey;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* control panel */
+#controlPanel {
+  display: flex;
+  justify-content: space-between;
+  height: 10%;
+  border: 3px solid rgb(78, 76, 76);
+  /* margin: 5px; */
+}
+
+#statsContainer {
+  display: flex;
+  width: 40%;
+}
+#mineIcon {
+  border: 1px solid black;
+  width: 25%;
+  /*  */
+}
+#minesLeft {
+  background-color: rgba(146, 102, 146, 0.151);
+  width: 25%;
+  text-align: center;
+  font-size: 125%;
+  /*  */
+}
+
+#flagIcon {
+  border: 1px solid black;
+  width: 50%;
+  /*  */
+}
+#flagsLeft {
+  background-color: rgba(146, 102, 146, 0.151);
+  width: 50%;
+  text-align: center;
+  font-size: 125%;
+  /*  */
+}
+
+#gameButton {
+  width: 10%;
+  /* height: 100%; */
+  /*  */
+}
+
+#timerContainer {
+  display: flex;
+  justify-content: flex-end;
+  height: 100%;
+  width: 40%;
+}
+
+#timerIcon {
+  border: 1px solid black;
+  width: 25%;
+}
+
+#timer {
+  background-color: rgba(146, 102, 146, 0.151);
+  width: 50%;
+  text-align: center;
+  font-size: 125%;
+}
+
+/* grid container */
+#gridContainer {
+  display: flex;
+  flex-direction: column;
+  /* margin: 5px; */
+  height: 90%;
+  /* border: 3px solid rgb(78, 76, 76); */
 }
 
 .row {
   display: flex;
+  flex-grow: 1;
+  flex-basis: 0;
 }
+
 .square {
-  height: 25px;
-  width: 25px;
+  flex-grow: 1;
+  flex-basis: 0;
+  text-align: center;
+  font-size: 80%;
+}
+
+.square:hover {
+  background-color: rgb(233, 231, 231);
 }

@@ -1,5 +1,8 @@
-const container = document.getElementById("container");
+const container = document.getElementById("gridContainer");
 const startGameButton = document.querySelector("#startGameButton");
+// const minesLeft = document.getElementById("minesLeft");
+const flagsLeft = document.getElementById("flagsLeft");
+const timer = document.getElementById("timer");
 let firstMove;
 let depth = 0;
 let startTime;
@@ -84,6 +87,7 @@ function draw(grid) {
       const squareElement = document.createElement("button");
       squareElement.className = `square`;
       squareElement.id = `${x}-${y}`;
+
       squareElement.addEventListener("click", (e) => {
         if (["🚩", "?"].includes(squareElement.innerText)) return;
         switch (square) {
@@ -96,7 +100,6 @@ function draw(grid) {
             firstMove = false;
             // reveal squares
             const emptySquares = checkEmptySquares(grid, [squareElement.id]);
-            console.log(emptySquares);
             emptySquares.forEach((pos) => {
               const [tempX, tempY] = pos.split("-");
               const emptySquareElement = document.getElementById(pos);
@@ -158,6 +161,12 @@ function startGame() {
   const inputs = document.querySelectorAll("input");
   const boardSize = parseInt(inputs[0].value);
   const mineCount = parseInt(inputs[1].value);
+
+  // counters:
+  timer.innerText = 0;
+  // minesLeft.innerText = mineCount;s
+  flagsLeft.innerText = mineCount;
+
   if (!boardSize || !mineCount) {
     alert("please enter board size and mines count");
   } else {
