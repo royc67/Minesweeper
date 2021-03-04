@@ -1,4 +1,4 @@
-const container = document.getElementById("gridContainer");
+const gridContainer = document.getElementById("gridContainer");
 const startGameButton = document.querySelector("#startGameButton");
 const gameButton = document.querySelector("#gameButton");
 let minesPosition;
@@ -13,6 +13,7 @@ let depth = 0;
 let startTime;
 let indexes;
 let gameInterval;
+let winner = false;
 let timer;
 
 // declaring vectors
@@ -86,7 +87,19 @@ function toNewPos(pos, vec, gridSize) {
 }
 
 function draw(grid) {
-  container.innerHTML = "";
+  gridContainer.addEventListener("mousedown", (e) => {
+    if (winner) return;
+
+    gameButton.classList.add("hold");
+  });
+
+  gridContainer.addEventListener("mouseup", (e) => {
+    if (winner) return;
+
+    gameButton.classList.remove("hold");
+  });
+
+  gridContainer.innerHTML = "";
   grid.forEach((row, x) => {
     let rowElement = document.createElement("div");
     rowElement.className = "row";
@@ -101,6 +114,7 @@ function draw(grid) {
           e.target.className.includes("_")
         )
           return;
+        gameButton.classList.remove("hold");
         switch (square) {
           case "M":
             if (firstMove) {
@@ -108,6 +122,7 @@ function draw(grid) {
             } else endGame(grid);
             break;
           case 0:
+            gameButton.classList.add("good");
             firstMove = false;
             // reveal squares
             const emptySquares = checkEmptySquares(grid, [squareElement.id]);
@@ -126,6 +141,7 @@ function draw(grid) {
             break;
           default:
             firstMove = false;
+            gameButton.classList.add("good");
             e.target.classList.add(`_${grid[x][y]}`);
             e.target.classList.add("revealed");
             checkWinner();
@@ -144,7 +160,7 @@ function draw(grid) {
       });
       rowElement.appendChild(squareElement);
     });
-    container.appendChild(rowElement);
+    gridContainer.appendChild(rowElement);
   });
 }
 
@@ -166,6 +182,7 @@ function checkWinner() {
   if (revealedSquaresNumber === boardSize * boardSize - mineCount) {
     clearInterval(gameInterval);
     // gameButton.classList.add;
+    winner = true;
     revealMines();
     console.log("winner");
   }

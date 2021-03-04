@@ -62,8 +62,6 @@
 
 #gameButton {
   width: 10%;
-  /* height: 100%; */
-  /*  */
 }
 
 #timerIcon {
@@ -159,29 +157,32 @@
   background-image: url(./Images/button/04.png);
 }
 
-.btn0 {
+.btn {
   background-size: cover;
   background-image: url("./Images/button/00.png");
 }
 
-.btn1 {
-  background-size: cover;
-  background-image: url("./Images/button/1.png");
+.btn.hold {
+  background-image: url("./Images/button/hold.png");
 }
 
-.winner {
-  background-size: cover;
-  background-image: url("./Images/button/2.png");
+.btn.win {
+  background-image: url("./Images/button/win.png");
 }
-.loser {
-  background-size: cover;
-  background-image: url("./Images/button/3.png");
+.btn.lose {
+  background-image: url("./Images/button/lose.png");
+}
+
+.btn.good {
+  background-image: url("./Images/button/good.png");
 }
 
 .counter {
+  padding-top: 1px;
+  padding-bottom: 1px;
+  background-color: black;
   display: flex;
   justify-content: center;
-  align-items: stretch;
   width: 20%;
   height: 100%;
 }
@@ -189,7 +190,7 @@
 .digit {
   width: 30%;
   height: 100%;
-  background-size: cover;
+  background-size: 95%;
 }
 
 .d0 {
