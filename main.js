@@ -1,11 +1,13 @@
 const container = document.getElementById("gridContainer");
 const startGameButton = document.querySelector("#startGameButton");
 const gameButton = document.querySelector("#gameButton");
+let minesPosition;
 
 // const minesLeft = document.getElementById("minesLeft");
 const flagsElement = document.getElementById("flagsLeft");
-let flagsLeft;
-const timerElement = document.getElementById("timer");
+let flagsLeft, mineCount, boardSize;
+let mines;
+const timerContainer = document.getElementById("timerContainer");
 let firstMove;
 let depth = 0;
 let startTime;
@@ -32,7 +34,7 @@ function generateGrid(boardSize = 10, mineCount = 15) {
 
   // plant mines
   let mineX, mineY;
-  let minesPosition = [];
+  minesPosition = [];
   while (mineCount > 0) {
     do {
       [mineX, mineY] = [
@@ -90,11 +92,15 @@ function draw(grid) {
     rowElement.className = "row";
     row.forEach((square, y) => {
       const squareElement = document.createElement("div");
-      squareElement.className = `square`;
+      squareElement.className = `square facingDown`;
       squareElement.id = `${x}-${y}`;
 
       squareElement.addEventListener("click", (e) => {
-        if (e.target.classList.contains("flagged")) return;
+        if (
+          e.target.classList.contains("flagged") ||
+          e.target.className.includes("_")
+        )
+          return;
         switch (square) {
           case "M":
             if (firstMove) {
@@ -109,11 +115,20 @@ function draw(grid) {
               const [tempX, tempY] = pos.split("-");
               const emptySquareElement = document.getElementById(pos);
               emptySquareElement.classList.add(`_${grid[tempX][tempY]}`);
+              emptySquareElement.classList.add("revealed");
+              if (emptySquareElement.classList.contains("flagged")) {
+                flagsLeft++;
+                flagsElement.innerText = flagsLeft;
+                emptySquareElement.classList.remove("flagged");
+              }
             });
+            checkWinner();
             break;
           default:
             firstMove = false;
-            e.target.className += ` _${grid[x][y]}`;
+            e.target.classList.add(`_${grid[x][y]}`);
+            e.target.classList.add("revealed");
+            checkWinner();
         }
       });
 
@@ -145,23 +160,41 @@ function endGame(grid) {
   });
 }
 
+function checkWinner() {
+  const revealedSquaresNumber = document.getElementsByClassName("revealed")
+    .length;
+  if (revealedSquaresNumber === boardSize * boardSize - mineCount) {
+    clearInterval(gameInterval);
+    // gameButton.classList.add;
+    revealMines();
+    console.log("winner");
+  }
+}
+
+function revealMines() {
+  minesPosition.forEach((squareID) => {
+    const mineSquare = document.getElementById(squareID);
+    if (!mineSquare.classList.contains("flagged"))
+      mineSquare.classList.add("_M");
+  });
+}
+
 function startGame() {
   clearInterval(gameInterval);
   firstMove = true;
   const inputs = document.querySelectorAll("input");
-  const boardSize = parseInt(inputs[0].value);
-  const mineCount = parseInt(inputs[1].value);
+  boardSize = parseInt(inputs[0].value);
+  mineCount = parseInt(inputs[1].value);
 
   gameInterval = setInterval(() => {
     timer++;
-    timerElement.innerText = timer;
+    addjustCounter(timerContainer, timer);
   }, 1000);
 
   // counters:
+
   timer = 0;
-  timerElement.innerText = 0;
   flagsLeft = mineCount;
-  console.log(flagsLeft);
   flagsElement.innerText = mineCount;
 
   if (!boardSize || !mineCount) {
@@ -239,5 +272,15 @@ function checkEmptySquares(grid, emptySquares, prevLength) {
   return checkEmptySquares(grid, [...emptySquares], curLength);
 }
 
+function addjustCounter(container, num) {
+  if (num <= 999) {
+    container.children[0].className = `digit d${Math.floor(num / 100)}`;
+    container.children[1].className = `digit d${Math.floor((num % 100) / 10)}`;
+    container.children[2].className = `digit d${Math.floor(num % 10)}`;
+  }
+}
+
 startGameButton.addEventListener("click", startGame);
 gameButton.addEventListener("click", startGame);
+
+startGame();

@@ -6,10 +6,12 @@
 
 /* game container */
 #gameContainer {
-  /* background-color: rgba(30, 17, 99, 0.712); */
+  background-color: #c0c0c0;
+  min-width: 450px;
+  min-height: 500px;
   margin: auto;
-  width: 90vmin;
-  height: 100vmin;
+  width: 45vmin;
+  height: 50vmin;
   border: 3px solid grey;
   padding: 10px;
   display: flex;
@@ -43,17 +45,18 @@
 }
 
 #flagIcon {
-  border: 1px solid black;
+  /* border: 1px solid black; */
   width: 25%;
   background-size: cover;
-  background-image: url("./Images/flagged.png");
+  background-image: url("./Images/flag.png");
+  background-color: rgba(173, 172, 175, 0.712);
   /*  */
 }
 #flagsLeft {
   /* background-color: rgba(146, 102, 146, 0.151); */
   width: 25%;
   text-align: center;
-  font-size: 125%;
+  font-size: 210%;
   /*  */
 }
 
@@ -61,13 +64,6 @@
   width: 10%;
   /* height: 100%; */
   /*  */
-}
-
-#timerContainer {
-  display: flex;
-  justify-content: flex-end;
-  height: 100%;
-  width: 40%;
 }
 
 #timerIcon {
@@ -80,7 +76,7 @@
   background-color: rgba(146, 102, 146, 0.151);
   width: 50%;
   text-align: center;
-  font-size: 125%;
+  font-size: 210%;
 }
 
 /* grid container */
@@ -100,55 +96,129 @@
 
 .square {
   background-size: cover;
-  background-image: url(./Images/facingDown.png);
+  background-image: url(./Images/squares/facingDown.png);
   flex-grow: 1;
   flex-basis: 0;
-  /* text-align: center; */
-  /* font-size: 80%; */
+}
+
+/* .facingDown {
+  background-image: url(./Images/squares/facingDown.png);
+} */
+
+.clicked {
+  background-image: url(./Images/squares/0.png);
 }
 
 ._0 {
   background-size: cover;
-  background-image: url(./Images/0.png);
+  background-image: url(./Images/squares/0.png);
 }
 ._1 {
   background-size: cover;
-  background-image: url(./Images/1.png);
+  background-image: url(./Images/squares/1.png);
 }
 ._2 {
   background-size: cover;
-  background-image: url(./Images/2.png);
+  background-image: url(./Images/squares/2.png);
 }
 ._3 {
   background-size: cover;
-  background-image: url(./Images/3.png);
+  background-image: url(./Images/squares/3.png);
 }
 ._4 {
   background-size: cover;
-  background-image: url(./Images/4.png);
+  background-image: url(./Images/squares/4.png);
 }
 ._5 {
   background-size: cover;
-  background-image: url(./Images/5.png);
+  background-image: url(./Images/squares/5.png);
 }
 ._6 {
   background-size: cover;
-  background-image: url(./Images/6.png);
+  background-image: url(./Images/squares/6.png);
 }
 ._7 {
   background-size: cover;
-  background-image: url(./Images/7.png);
+  background-image: url(./Images/squares/7.png);
 }
 ._8 {
   background-size: cover;
-  background-image: url(./Images/8.png);
+  background-image: url(./Images/squares/8.png);
 }
 
 ._M {
   background-size: cover;
-  background-image: url(./Images/bomb.png);
+  background-image: url(./Images/squares/M0.png);
 }
 
 .flagged {
-  background-image: url(./Images/flagged.png);
+  background-image: url(./Images/squares/flagged.png);
+}
+
+#gameButton:active {
+  background-image: url(./Images/button/04.png);
+}
+
+.btn0 {
+  background-size: cover;
+  background-image: url("./Images/button/00.png");
+}
+
+.btn1 {
+  background-size: cover;
+  background-image: url("./Images/button/1.png");
+}
+
+.winner {
+  background-size: cover;
+  background-image: url("./Images/button/2.png");
+}
+.loser {
+  background-size: cover;
+  background-image: url("./Images/button/3.png");
+}
+
+.counter {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  width: 20%;
+  height: 100%;
+}
+
+.digit {
+  width: 30%;
+  height: 100%;
+  background-size: cover;
+}
+
+.d0 {
+  background-image: url("./Images/digits/00.png");
+}
+.d1 {
+  background-image: url("./Images/digits/01.png");
+}
+.d2 {
+  background-image: url("./Images/digits/02.png");
+}
+.d3 {
+  background-image: url("./Images/digits/03.png");
+}
+.d4 {
+  background-image: url("./Images/digits/04.png");
+}
+.d5 {
+  background-image: url("./Images/digits/05.png");
+}
+.d6 {
+  background-image: url("./Images/digits/06.png");
+}
+.d7 {
+  background-image: url("./Images/digits/07.png");
+}
+.d8 {
+  background-image: url("./Images/digits/08.png");
+}
+.d9 {
+  background-image: url("./Images/digits/09.png");
 }

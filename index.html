@@ -10,22 +10,26 @@
   <body>
     <div id="gameContainer">
       <div id="controlPanel">
-        <div id="statsContainer">
-          <!-- <div id="mineIcon">💣</div>
-          <div id="minesLeft">0</div> -->
-          <div id="flagIcon"></div>
-          <div id="flagsLeft">0</div>
+        <div id="flagsContainer" class="counter">
+          <div class="digit d0"></div>
+          <div class="digit d0"></div>
+          <div class="digit d0"></div>
         </div>
 
-        <button id="gameButton">😐</button>
+        <div id="gameButton" class="btn0"></div>
 
-        <div id="timerContainer">
-          <div id="timerIcon"></div>
-          <div id="timer">0</div>
+        <div id="timerContainer" class="counter">
+          <div class="digit d0"></div>
+          <div class="digit d0"></div>
+          <div class="digit d0"></div>
         </div>
       </div>
-
       <div id="gridContainer"></div>
+    </div>
+
+    <div id="statsContainer">
+      <div id="flagIcon"></div>
+      <div id="flagsLeft">0</div>
     </div>
 
     <h1>Minesweeper</h1>
