@@ -28,6 +28,45 @@ const VECTORS = [
   [-1, -1],
 ];
 
+function plantMines(grid, mineCount, pos) {
+  // plant mines
+  let mineX, mineY;
+  minesPosition = [];
+  while (mineCount > 0) {
+    do {
+      [mineX, mineY] = [
+        Math.floor(Math.random() * boardSize),
+        Math.floor(Math.random() * boardSize),
+      ];
+    } while (grid[mineX][mineY] === "M" && `${mineX}-${mineY}` === pos);
+
+    minesPosition.push(`${mineX}-${mineY}`);
+    grid[mineX][mineY] = "M";
+
+    mineCount--;
+  }
+
+  // count mines
+  minesPosition.forEach((pos) => {
+    VECTORS.forEach((vec) => {
+      const newPos = toNewPos(pos.split("-"), vec, grid.length);
+      if (!newPos) return;
+      //
+      const [newX, newY] = newPos;
+      switch (grid[newX][newY]) {
+        case "M":
+          break;
+        case 0:
+          grid[newX][newY] = 1;
+          break;
+        default:
+          grid[newX][newY]++;
+          break;
+      }
+    });
+  });
+}
+
 function generateGrid(boardSize = 10, mineCount = 15) {
   const grid = Array.from({ length: boardSize }, () =>
     Array.from({ length: boardSize }, () => 0)
@@ -100,6 +139,7 @@ function draw(grid) {
   });
 
   gridContainer.innerHTML = "";
+  console.log(grid);
   grid.forEach((row, x) => {
     let rowElement = document.createElement("div");
     rowElement.className = "row";
@@ -114,6 +154,8 @@ function draw(grid) {
           e.target.className.includes("_")
         )
           return;
+
+        console.log(grid);
         gameButton.classList.remove("hold");
         switch (square) {
           case "M":
@@ -122,7 +164,6 @@ function draw(grid) {
             } else endGame(grid);
             break;
           case 0:
-            gameButton.classList.add("good");
             firstMove = false;
             // reveal squares
             const emptySquares = checkEmptySquares(grid, [squareElement.id]);
@@ -131,6 +172,8 @@ function draw(grid) {
               const emptySquareElement = document.getElementById(pos);
               emptySquareElement.classList.add(`_${grid[tempX][tempY]}`);
               emptySquareElement.classList.add("revealed");
+              emptySquareElement.classList.remove("facingDown");
+
               if (emptySquareElement.classList.contains("flagged")) {
                 flagsLeft++;
                 flagsElement.innerText = flagsLeft;
@@ -141,9 +184,9 @@ function draw(grid) {
             break;
           default:
             firstMove = false;
-            gameButton.classList.add("good");
             e.target.classList.add(`_${grid[x][y]}`);
             e.target.classList.add("revealed");
+            e.target.classList.remove("facingDown");
             checkWinner();
         }
       });
@@ -152,6 +195,7 @@ function draw(grid) {
         e.preventDefault();
         if (e.target.classList.value.includes("_")) return;
         if (!flagsLeft && !e.target.classList.contains("flagged")) return;
+        e.target.classList.toggle("facingDown");
         e.target.classList.toggle("flagged");
 
         flagsLeft =
@@ -167,10 +211,13 @@ function draw(grid) {
 function endGame(grid) {
   clearInterval(gameInterval);
 
+  gameButton.classList.add("lose");
+
   grid.forEach((row, x) => {
     row.forEach((square, y) => {
       const squareElement = document.getElementById(`${x}-${y}`);
       squareElement.classList.remove(`flagged`);
+      squareElement.classList.remove(`facingDown`);
       squareElement.classList.add(`_${square}`);
     });
   });
@@ -191,12 +238,14 @@ function checkWinner() {
 function revealMines() {
   minesPosition.forEach((squareID) => {
     const mineSquare = document.getElementById(squareID);
+    mineSquare.classList.remove("facingDown");
     if (!mineSquare.classList.contains("flagged"))
       mineSquare.classList.add("_M");
   });
 }
 
 function startGame() {
+  gameButton.className = "btn";
   clearInterval(gameInterval);
   firstMove = true;
   const inputs = document.querySelectorAll("input");
