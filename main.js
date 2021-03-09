@@ -4,9 +4,11 @@ const gameButton = document.querySelector("#gameButton");
 let minesPosition;
 
 // const minesLeft = document.getElementById("minesLeft");
-const flagsElement = document.getElementById("flagsLeft");
+// const flagsElement = document.getElementById("flagsLeft");
 let flagsLeft, mineCount, boardSize;
 let mines;
+
+const flagsContainer = document.getElementById("flagsContainer");
 const timerContainer = document.getElementById("timerContainer");
 let firstMove;
 let depth = 0;
@@ -28,65 +30,78 @@ const VECTORS = [
   [-1, -1],
 ];
 
-function plantMines(grid, mineCount, pos) {
-  // plant mines
+function plantMines(length, mineCount, pos) {
+  const gridClone = Array.from({ length }, () =>
+    Array.from({ length }, () => 0)
+  );
+
+  let mines = mineCount;
+
   let mineX, mineY;
   minesPosition = [];
-  while (mineCount > 0) {
+  while (mines > 0) {
     do {
       [mineX, mineY] = [
         Math.floor(Math.random() * boardSize),
         Math.floor(Math.random() * boardSize),
       ];
-    } while (grid[mineX][mineY] === "M" && `${mineX}-${mineY}` === pos);
+    } while (gridClone[mineX][mineY] === "M" || `${mineX}-${mineY}` === pos);
 
     minesPosition.push(`${mineX}-${mineY}`);
-    grid[mineX][mineY] = "M";
+    gridClone[mineX][mineY] = "M";
 
-    mineCount--;
+    mines--;
   }
 
   // count mines
   minesPosition.forEach((pos) => {
     VECTORS.forEach((vec) => {
-      const newPos = toNewPos(pos.split("-"), vec, grid.length);
+      const newPos = toNewPos(pos.split("-"), vec, gridClone.length);
       if (!newPos) return;
       //
       const [newX, newY] = newPos;
-      switch (grid[newX][newY]) {
+      switch (gridClone[newX][newY]) {
         case "M":
           break;
         case 0:
-          grid[newX][newY] = 1;
+          gridClone[newX][newY] = 1;
           break;
         default:
-          grid[newX][newY]++;
+          gridClone[newX][newY]++;
           break;
       }
     });
   });
+
+  return gridClone;
 }
 
-function generateGrid(boardSize = 10, mineCount = 15) {
-  const grid = Array.from({ length: boardSize }, () =>
-    Array.from({ length: boardSize }, () => 0)
+function generateGrid(size = 10, mines = 15) {
+  boardSize = size;
+  mineCount = mines;
+  const grid = Array.from({ length: size }, () =>
+    Array.from({ length: size }, () => 0)
   );
+
+  // return grid;
+
+  // grid[0][0] = "M";
 
   // plant mines
   let mineX, mineY;
   minesPosition = [];
-  while (mineCount > 0) {
+  while (mines > 0) {
     do {
       [mineX, mineY] = [
-        Math.floor(Math.random() * boardSize),
-        Math.floor(Math.random() * boardSize),
+        Math.floor(Math.random() * size),
+        Math.floor(Math.random() * size),
       ];
     } while (grid[mineX][mineY] === "M");
 
     minesPosition.push(`${mineX}-${mineY}`);
     grid[mineX][mineY] = "M";
 
-    mineCount--;
+    mines--;
   }
 
   // count mines
@@ -139,60 +154,40 @@ function draw(grid) {
   });
 
   gridContainer.innerHTML = "";
-  console.log(grid);
   grid.forEach((row, x) => {
     let rowElement = document.createElement("div");
     rowElement.className = "row";
     row.forEach((square, y) => {
       const squareElement = document.createElement("div");
+      const pos = `${x}-${y}`;
       squareElement.className = `square facingDown`;
-      squareElement.id = `${x}-${y}`;
+      squareElement.id = pos;
 
       squareElement.addEventListener("click", (e) => {
-        if (
+        if (firstMove && grid[x][y] === "M") {
+          const length = grid.length;
+          grid = false;
+
+          grid = plantMines(length, mineCount, squareElement.id);
+          let firstMoveInterval = setInterval(() => {
+            if (grid) {
+              handleClick(grid, pos, e.target);
+              clearInterval(firstMoveInterval);
+            }
+          }, 200);
+        } else if (
           e.target.classList.contains("flagged") ||
           e.target.className.includes("_")
-        )
+        ) {
           return;
-
-        console.log(grid);
-        gameButton.classList.remove("hold");
-        switch (square) {
-          case "M":
-            if (firstMove) {
-              startGame();
-            } else endGame(grid);
-            break;
-          case 0:
-            firstMove = false;
-            // reveal squares
-            const emptySquares = checkEmptySquares(grid, [squareElement.id]);
-            emptySquares.forEach((pos) => {
-              const [tempX, tempY] = pos.split("-");
-              const emptySquareElement = document.getElementById(pos);
-              emptySquareElement.classList.add(`_${grid[tempX][tempY]}`);
-              emptySquareElement.classList.add("revealed");
-              emptySquareElement.classList.remove("facingDown");
-
-              if (emptySquareElement.classList.contains("flagged")) {
-                flagsLeft++;
-                flagsElement.innerText = flagsLeft;
-                emptySquareElement.classList.remove("flagged");
-              }
-            });
-            checkWinner();
-            break;
-          default:
-            firstMove = false;
-            e.target.classList.add(`_${grid[x][y]}`);
-            e.target.classList.add("revealed");
-            e.target.classList.remove("facingDown");
-            checkWinner();
+        } else {
+          handleClick(grid, pos, e.target);
         }
       });
 
       squareElement.addEventListener("contextmenu", (e) => {
         e.preventDefault();
+        if (e.target.classList.contains("revealed")) return;
         if (e.target.classList.value.includes("_")) return;
         if (!flagsLeft && !e.target.classList.contains("flagged")) return;
         e.target.classList.toggle("facingDown");
@@ -200,12 +195,51 @@ function draw(grid) {
 
         flagsLeft =
           flagsLeft + (e.target.classList.contains("flagged") ? -1 : +1);
-        flagsElement.innerText = flagsLeft;
+
+        // flagsElement.innerText = flagsLeft;
+        addjustCounter(flagsContainer, flagsLeft);
       });
       rowElement.appendChild(squareElement);
     });
     gridContainer.appendChild(rowElement);
   });
+}
+
+function handleClick(grid, pos, squareElement) {
+  const [x, y] = pos.split("-");
+  const square = grid[x][y];
+  gameButton.classList.remove("hold");
+  switch (square) {
+    case "M":
+      endGame(grid);
+      break;
+    case 0:
+      firstMove = false;
+      // reveal squares
+      const emptySquares = checkEmptySquares(grid, [squareElement.id]);
+      emptySquares.forEach((pos) => {
+        const [tempX, tempY] = pos.split("-");
+        const emptySquareElement = document.getElementById(pos);
+        emptySquareElement.classList.add(`_${grid[tempX][tempY]}`);
+        emptySquareElement.classList.add("revealed");
+        emptySquareElement.classList.remove("facingDown");
+
+        if (emptySquareElement.classList.contains("flagged")) {
+          flagsLeft++;
+          addjustCounter(flagsContainer, flagsLeft);
+          // flagsElement.innerText = flagsLeft;
+          emptySquareElement.classList.remove("flagged");
+        }
+      });
+      checkWinner();
+      break;
+    default:
+      firstMove = false;
+      squareElement.classList.add(`_${square}`);
+      squareElement.classList.add("revealed");
+      squareElement.classList.remove("facingDown");
+      checkWinner();
+  }
 }
 
 function endGame(grid) {
@@ -230,8 +264,8 @@ function checkWinner() {
     clearInterval(gameInterval);
     // gameButton.classList.add;
     winner = true;
+    gameButton.className = "btn win";
     revealMines();
-    console.log("winner");
   }
 }
 
@@ -248,26 +282,21 @@ function startGame() {
   gameButton.className = "btn";
   clearInterval(gameInterval);
   firstMove = true;
-  const inputs = document.querySelectorAll("input");
-  boardSize = parseInt(inputs[0].value);
-  mineCount = parseInt(inputs[1].value);
+  // const inputs = document.querySelectorAll("input");
+  // boardSize = parseInt(inputs[0].value);
+  // mineCount = parseInt(inputs[1].value);
+  timer = 0;
+  addjustCounter(timerContainer, 0);
 
   gameInterval = setInterval(() => {
     timer++;
     addjustCounter(timerContainer, timer);
   }, 1000);
 
-  // counters:
+  flagsLeft = mineCount ? mineCount : 15;
+  addjustCounter(flagsContainer, flagsLeft);
 
-  timer = 0;
-  flagsLeft = mineCount;
-  flagsElement.innerText = mineCount;
-
-  if (!boardSize || !mineCount) {
-    alert("please enter board size and mines count");
-  } else {
-    draw(generateGrid(boardSize, mineCount));
-  }
+  draw(generateGrid(boardSize, mineCount));
 }
 
 function checkEmptySquares(grid, emptySquares, prevLength) {
@@ -327,9 +356,9 @@ function checkEmptySquares(grid, emptySquares, prevLength) {
       });
     });
 
-    console.log(
-      `recursion ran ${depth} times, took ${Date.now() - startTime}ms`
-    );
+    // console.log(
+    //   `recursion ran ${depth} times, took ${Date.now() - startTime}ms`
+    // );
     depth = 0;
     // final value
     return [...emptySquares, ...surroundingSquares];
@@ -345,8 +374,6 @@ function addjustCounter(container, num) {
     container.children[2].className = `digit d${Math.floor(num % 10)}`;
   }
 }
-
-startGameButton.addEventListener("click", startGame);
 gameButton.addEventListener("click", startGame);
 
 startGame();
