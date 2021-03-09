@@ -1,14 +1,226 @@
-.row {
-  display: flex;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+  background-color: khaki;
 }
-body {
-  background-color: rgba(139, 80, 139, 0.151);
+
+/* game container */
+#gameContainer {
+  background-color: #c0c0c0;
+  min-width: 450px;
+  min-height: 500px;
+  margin: auto;
+  width: 45vmin;
+  height: 50vmin;
+  border: 3px solid grey;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* control panel */
+#controlPanel {
+  display: flex;
+  justify-content: space-between;
+  height: 10%;
+  border: 3px solid rgb(78, 76, 76);
+  background-color: #c0c0c0;
+  /* margin: 5px; */
+}
+
+#statsContainer {
+  display: flex;
+  width: 40%;
+}
+#mineIcon {
+  border: 1px solid black;
+  width: 25%;
+  /*  */
+}
+#minesLeft {
+  background-color: rgba(146, 102, 146, 0.151);
+  width: 25%;
+  text-align: center;
+  font-size: 125%;
+  /*  */
+}
+
+#flagIcon {
+  /* border: 1px solid black; */
+  width: 25%;
+  background-size: cover;
+  background-image: url("./Images/flag.png");
+  background-color: rgba(173, 172, 175, 0.712);
+  /*  */
+}
+#flagsLeft {
+  /* background-color: rgba(146, 102, 146, 0.151); */
+  width: 25%;
+  text-align: center;
+  font-size: 210%;
+  /*  */
+}
+
+#gameButton {
+  width: 10%;
+}
+
+#timerIcon {
+  width: 25%;
+  background-size: cover;
+  background-image: url("./Images/clock.png");
+}
+
+#timer {
+  background-color: rgba(146, 102, 146, 0.151);
+  width: 50%;
+  text-align: center;
+  font-size: 210%;
+}
+
+/* grid container */
+#gridContainer {
+  display: flex;
+  flex-direction: column;
+  /* margin: 5px; */
+  height: 90%;
+  /* border: 3px solid rgb(78, 76, 76); */
 }
 
 .row {
   display: flex;
+  flex-grow: 1;
+  flex-basis: 0;
 }
+
 .square {
-  height: 25px;
-  width: 25px;
+  background-size: cover;
+  /* background-color: #c0c0c0; */
+
+  /* background-image: url(./Images/squares/facingDown.png); */
+  flex-grow: 1;
+  flex-basis: 0;
+}
+
+.facingDown {
+  background-image: url(./Images/squares/facingDown.png);
+}
+
+.square.facingDown:active {
+  background-image: url(./Images/squares/0.png);
+}
+
+._0 {
+  background-size: cover;
+  background-image: url(./Images/squares/0.png);
+}
+._1 {
+  background-size: cover;
+  background-image: url(./Images/squares/1.png);
+}
+._2 {
+  background-size: cover;
+  background-image: url(./Images/squares/2.png);
+}
+._3 {
+  background-size: cover;
+  background-image: url(./Images/squares/3.png);
+}
+._4 {
+  background-size: cover;
+  background-image: url(./Images/squares/4.png);
+}
+._5 {
+  background-size: cover;
+  background-image: url(./Images/squares/5.png);
+}
+._6 {
+  background-size: cover;
+  background-image: url(./Images/squares/6.png);
+}
+._7 {
+  background-size: cover;
+  background-image: url(./Images/squares/7.png);
+}
+._8 {
+  background-size: cover;
+  background-image: url(./Images/squares/8.png);
+}
+
+._M {
+  background-size: cover;
+  background-image: url(./Images/squares/M0.png);
+}
+
+.flagged {
+  background-image: url(./Images/squares/flagged.png);
+}
+
+#gameButton:active {
+  background-image: url(./Images/button/01.png);
+}
+
+.btn {
+  background-size: cover;
+  background-image: url("./Images/button/00.png");
+}
+
+.btn.hold {
+  background-image: url("./Images/button/hold.png");
+}
+
+.btn.win {
+  background-image: url("./Images/button/win.png");
+}
+.btn.lose {
+  background-image: url("./Images/button/lose.png");
+}
+
+.counter {
+  padding-top: 1px;
+  padding-bottom: 1px;
+  background-color: black;
+  display: flex;
+  justify-content: center;
+  width: 20%;
+  height: 100%;
+}
+
+.digit {
+  width: 30%;
+  height: 100%;
+  background-size: 95%;
+}
+
+.d0 {
+  background-image: url("./Images/digits/00.png");
+}
+.d1 {
+  background-image: url("./Images/digits/01.png");
+}
+.d2 {
+  background-image: url("./Images/digits/02.png");
+}
+.d3 {
+  background-image: url("./Images/digits/03.png");
+}
+.d4 {
+  background-image: url("./Images/digits/04.png");
+}
+.d5 {
+  background-image: url("./Images/digits/05.png");
+}
+.d6 {
+  background-image: url("./Images/digits/06.png");
+}
+.d7 {
+  background-image: url("./Images/digits/07.png");
+}
+.d8 {
+  background-image: url("./Images/digits/08.png");
+}
+.d9 {
+  background-image: url("./Images/digits/09.png");
 }

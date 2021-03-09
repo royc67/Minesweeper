@@ -8,14 +8,25 @@
     <title>Minesweeper</title>
   </head>
   <body>
-    <h1>Minesweeper</h1>
-    <label>Board Size</label
-    ><input type="number" id="boardSizeInput" value="10" />
-    <br />
-    <label>Number of Mines</label
-    ><input type="number" id="minesInput" value="15" />
-    <br />
-    <button id="startGameButton">Start Game</button>
+    <div id="gameContainer">
+      <div id="controlPanel">
+        <div id="flagsContainer" class="counter">
+          <div class="digit d0"></div>
+          <div class="digit d0"></div>
+          <div class="digit d0"></div>
+        </div>
+
+        <div id="gameButton" class="btn"></div>
+
+        <div id="timerContainer" class="counter">
+          <div class="digit d0"></div>
+          <div class="digit d0"></div>
+          <div class="digit d0"></div>
+        </div>
+      </div>
+      <div id="gridContainer"></div>
+    </div>
+
     <container id="container"></container>
     <script src="./main.js"></script>
   </body>
