@@ -1,3 +1,3 @@
 # Minesweeper
 
-![alt text](./snapshot.gif)
+![gameplay gif](./snapshot.gif)
